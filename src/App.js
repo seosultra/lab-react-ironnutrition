@@ -1,23 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import {} from 'antd';
+import foods from './foods.json';
+import { useState } from 'react';
+import FoodBox from './components/FoodBox';
+import AddFoodForm from './components/AddFoodForm';
+import Search from './components/Search';
 
 function App() {
+  const [food, setFood] = useState(foods);
+  const [query, setQuery] = useState('');
+
+  const handleDelete = (name) => {
+    const copyF = [...food];
+    const newF = copyF.filter((deletedF) => deletedF.name !== name);
+    setFood(newF);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AddFoodForm food={food} setFood={setFood} />
+      <Search query={query} setQuery={setQuery} />
+      {food
+        .filter((theFood) => {
+          return theFood.name.toLowerCase().includes(query.toLowerCase());
+        })
+        .map((foods) => {
+          return <FoodBox food={foods} handleDelete={handleDelete} />;
+        })}
     </div>
   );
 }
